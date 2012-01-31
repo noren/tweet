@@ -21,6 +21,7 @@
       outro_text: null,                         // [string]   do you want text AFTER your tweets?
       join_text:  null,                         // [string]   optional text in between date and tweet, try setting to "auto"
       auto_join_text_default: "i said,",        // [string]   auto text for non verb: "i said" bullocks
+      blank_window: true,                       // [boolean]  add target="_blank" attibute to all links in tweet content 
       auto_join_text_ed: "i",                   // [string]   auto text for past tense: "i" surfed
       auto_join_text_ing: "i am",               // [string]   auto tense for present tense: "i was" surfing
       auto_join_text_reply: "i replied to",     // [string]   auto tense for replies: "i replied to" @someone "with"
@@ -70,6 +71,15 @@
 
     function escapeHTML(s) {
       return s.replace(/</g,"&lt;").replace(/>/g,"^&gt;");
+    }
+    
+    // add target="_blank" attibute
+    function addBlankTargets(c) {
+        if(s.blank_window) {
+            return (""+c).replace(/<a\s+href=/gi, '<a target="_blank" href=');
+        }else{
+            return c;
+        }
     }
 
     $.fn.extend({
@@ -202,7 +212,7 @@
       o.avatar = o.avatar_size ?
         t('<a class="tweet_avatar" href="{user_url}"><img src="{avatar_url}" height="{avatar_size}" width="{avatar_size}" alt="{screen_name}\'s avatar" title="{screen_name}\'s avatar" border="0"/></a>', o) : '';
       o.time = t('<span class="tweet_time"><a href="{tweet_url}" title="view tweet on twitter">{tweet_relative_time}</a></span>', o);
-      o.text = t('<span class="tweet_text">{tweet_text_fancy}</span>', o);
+      o.text = addBlankTargets(t('<span class="tweet_text">{tweet_text_fancy}</span>', o));
       o.reply_action = t('<a class="tweet_action tweet_reply" href="{reply_url}">reply</a>', o);
       o.retweet_action = t('<a class="tweet_action tweet_retweet" href="{retweet_url}">retweet</a>', o);
       o.favorite_action = t('<a class="tweet_action tweet_favorite" href="{favorite_url}">favorite</a>', o);
